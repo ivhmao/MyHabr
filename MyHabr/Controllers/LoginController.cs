@@ -11,6 +11,12 @@ namespace MyHabr.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private IConfiguration appConfig;
+        public LoginController(IConfiguration inAppConfig)
+        {
+            appConfig = inAppConfig;
+        }
+
         [HttpPost, Route("login")]
         public IActionResult Login(LoginDTO loginDTO)
         {
@@ -21,11 +27,11 @@ namespace MyHabr.Controllers
 
                 if (loginDTO.UserName.Equals("joydip") && loginDTO.Password.Equals("joydip123"))
                 {
-                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"));
+                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appConfig["SigningKey"]));
                     var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                     var jwtSecretToken = new JwtSecurityToken(
-                        issuer: "ABCYZ",
-                        audience: "http://localhost:7178",
+                        issuer: appConfig["Issuer"],//"ABCYZ",
+                        audience: appConfig["Audience"],//"http://localhost:7178",
                         signingCredentials: signingCredentials,
                         claims: new List<Claim>(),
                         expires: DateTime.Now.AddMinutes(10)

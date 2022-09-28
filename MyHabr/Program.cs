@@ -8,6 +8,13 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
+{
+    {"Issuer", "ABCYZ" },
+    {"Audience","http://localhost:7178" },
+    {"SigningKey", "thisisasecretkey@123"}
+});
+
 // Add services to the container.
 //builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -16,11 +23,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = "ABCYZ",
+            ValidIssuer = builder.Configuration["Issuer"],
             ValidateAudience = true,
-            ValidAudience = "http://localhost:7178",
+            ValidAudience = builder.Configuration["Audience"],
             ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SigningKey"])),
             ValidateIssuerSigningKey = true,
         };
     });
