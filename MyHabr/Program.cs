@@ -5,14 +5,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using MyHabr.Helpers;
+using MyHabr.Services;
+using MyHabr.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
 {
     {"Issuer", "ABCYZ" },
     {"Audience","http://localhost:7178" },
-    {"SigningKey", "thisisasecretkey@123"}
+    {"SigningKey", "thisisasecretkey@123"},
+    {"expiresMinutes", "30" }
 });
 
 // Add services to the container.
@@ -31,6 +38,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
         };
     });
+
+builder.Services.AddDbContext<AppDbContext>();//UseSqlServer("connection"));
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+//builder.Services.AddHttpContextAccessor();
+
+
+//builder.Services.AddControllers().AddJsonOptions(x =>
+//                x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -79,5 +95,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//app.MapGet("/", (AppDbContext db) => db.Users.ToList());
 
 app.Run();
