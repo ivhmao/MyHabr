@@ -13,7 +13,7 @@ namespace MyHabr.Interfaces
         LoginResponse Login(LoginRequest loginRequest);
         LoginResponse Registration(UserDTO userDTO);
         bool Verify(string verificationCode);
-        User GetCurrentUser(HttpContext context);
+        User GetCurrentUser(string token);
         User? SetRoles(int id, IList<RoleDTO> listRoles);
         User? UnsetRoles(int id, IList<RoleDTO> listRoles);
     }

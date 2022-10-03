@@ -39,7 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<AppDbContext>();//UseSqlServer("connection"));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=myhabr.db"));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
 //builder.Services.AddHttpContextAccessor();

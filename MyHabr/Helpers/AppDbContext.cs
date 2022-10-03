@@ -10,6 +10,7 @@ namespace MyHabr.Helpers
         public DbSet<Role> Roles { get; set; } = null!;
         public string DbPath { get; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+       // public AppDbContext() : base()
         {
             // пересоздадим базу данных
             //Database.EnsureDeleted();
@@ -17,8 +18,8 @@ namespace MyHabr.Helpers
         }
 
         // The following configures EF to create a Sqlite database file 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=myhabr.db");
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //    => options.UseSqlite("Data Source=myhabr.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

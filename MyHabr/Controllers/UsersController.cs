@@ -66,8 +66,10 @@ namespace MyHabr.Controllers
         public ActionResult<bool> ChangePassword(ChangePasswordRequest request)
         {
             var _context = ControllerContext.HttpContext;
+            var token = _context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token == null) return NotFound();
 
-            var currentUser = _userService.GetCurrentUser(_context);
+            var currentUser = _userService.GetCurrentUser(token);
             if (currentUser == null) return NotFound();
 
             _userService.ChangePassword(currentUser, request.OldPassword, request.NewPassword);
@@ -112,7 +114,11 @@ namespace MyHabr.Controllers
                 return BadRequest();
             }
 
-            var currentUser = _userService.GetCurrentUser(ControllerContext.HttpContext);
+            var _context = ControllerContext.HttpContext;
+            var token = _context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token == null) return BadRequest("Need authentication");
+
+            var currentUser = _userService.GetCurrentUser(token);
 
             if (currentUser == null)
             {

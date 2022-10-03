@@ -43,8 +43,9 @@ namespace MyHabr.Services
                 throw new Exception("Cannot register new user. User already exists.");
             }
 
+            var readerRole = _appDbContext.Roles.FirstOrDefault(r => r.Name.Equals("Reader"));
             var rolesForNewUser = new List<Role>();
-            rolesForNewUser.Add(RoleEnum.Reader);
+            rolesForNewUser.Add(readerRole);
 
             var newUser = new User()
             {
@@ -186,9 +187,8 @@ namespace MyHabr.Services
             return true;
         }
 
-        public User GetCurrentUser(HttpContext context)
+        public User GetCurrentUser(string token)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var userId = _jwtHelper.VerifyJwtToken(token);
             if (userId != null)
             {
