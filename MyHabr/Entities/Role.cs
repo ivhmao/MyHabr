@@ -11,7 +11,7 @@ namespace MyHabr.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [Required, MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
         [MaxLength(100)]
         public string? Description { get; set; }
         [JsonIgnore]

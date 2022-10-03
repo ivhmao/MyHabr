@@ -8,7 +8,6 @@ namespace MyHabr.Helpers
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Role> Roles { get; set; } = null!;
-        public string DbPath { get; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
        // public AppDbContext() : base()
         {

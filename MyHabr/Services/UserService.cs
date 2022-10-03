@@ -44,6 +44,8 @@ namespace MyHabr.Services
             }
 
             var readerRole = _appDbContext.Roles.FirstOrDefault(r => r.Name.Equals("Reader"));
+            if (readerRole == null) throw new Exception("Cannot register new user. Role Reader doesn't exists");
+
             var rolesForNewUser = new List<Role>();
             rolesForNewUser.Add(readerRole);
 
@@ -89,7 +91,7 @@ namespace MyHabr.Services
             return _appDbContext.Users.Include(u => u.Roles).ToList();
         }
 
-        public User GetById(int id)
+        public User? GetById(int id)
         {
             return _appDbContext.Users.Find(id);
         }
@@ -187,7 +189,7 @@ namespace MyHabr.Services
             return true;
         }
 
-        public User GetCurrentUser(string token)
+        public User? GetCurrentUser(string token)
         {
             var userId = _jwtHelper.VerifyJwtToken(token);
             if (userId != null)

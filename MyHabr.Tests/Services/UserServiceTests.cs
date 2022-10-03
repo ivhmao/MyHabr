@@ -30,20 +30,9 @@ namespace MyHabr.Services.Tests
 
         public UserServiceTests()
         {
-    //        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-    //        optionsBuilder.UseSqlite("Filename=test.db");
-
-    //        var dbOption = new DbContextOptionsBuilder<AppDbContext>()
-    //.UseSqlServer("Filename=test.db")
-    //.Options;
-
-    //        var appDbContext = new AppDbContext(dbOption);
-
-
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             optionsBuilder.UseInMemoryDatabase("MyInMemoryDatabseName");
             var appDbContext = new AppDbContext(optionsBuilder.Options);
-
 
             //Arrange
             var inMemorySettings = new Dictionary<string, string>
@@ -67,12 +56,18 @@ namespace MyHabr.Services.Tests
         {
             //Arrange
             Type t = typeof(UserService);
-            FieldInfo f1 = t.GetField("_appDbContext", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            FieldInfo f2 = t.GetField("_jwtHelper", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            FieldInfo? f1 = t.GetField("_appDbContext", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            FieldInfo? f2 = t.GetField("_jwtHelper", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+            Object? checkedAppDbContext = null;
+            Object? checkedJwtHelper = null;
 
             //Act
-            var checkedAppDbContext = f1.GetValue(_userService);
-            var checkedJwtHelper = f2.GetValue(_userService);
+            if (f1 != null && f2 != null)
+            {
+                checkedAppDbContext = f1.GetValue(_userService);
+                checkedJwtHelper = f2.GetValue(_userService);
+            }
 
             //Assert
             Assert.NotNull(checkedAppDbContext);
@@ -136,6 +131,8 @@ namespace MyHabr.Services.Tests
             var userIdFromToken = _jwtHelper.VerifyJwtToken(loginResponce.Token);
 
             var user = _userService.GetById(loginResponce.Id);
+            Assert.NotNull(user);
+            Assert.NotNull(user.VerificationCode);
             var varificationResponce = _userService.Verify(user.VerificationCode);
             //Assert
             Assert.True(varificationResponce);
@@ -176,6 +173,7 @@ namespace MyHabr.Services.Tests
         {
             //Arrange
             var userAdmin = _userService.GetById(1);
+            Assert.NotNull(userAdmin);
             userAdmin.Name = "EditedAdmin";
             UserDTO userDTO = new UserDTO();
             userDTO.Id = userAdmin.Id;
@@ -187,6 +185,7 @@ namespace MyHabr.Services.Tests
             var editedUser = _userService.Edit(userDTO);
 
             //Assert
+            Assert.NotNull(editedUser);
             Assert.Equal("EditedAdmin", editedUser.Name);
             Assert.Equal("Edited@email.com", editedUser.Email);
             Assert.Equal(userAdmin.Id, editedUser.Id);
@@ -209,6 +208,8 @@ namespace MyHabr.Services.Tests
             var userIdFromToken = _jwtHelper.VerifyJwtToken(loginResponce.Token);
 
             var user = _userService.GetById(loginResponce.Id);
+            Assert.NotNull(user);
+            Assert.NotNull(user.VerificationCode);
             var varificationResponce = _userService.Verify(user.VerificationCode);
 
             RoleDTO writerRole = new RoleDTO { Name = "Writer" };
@@ -221,6 +222,7 @@ namespace MyHabr.Services.Tests
             var editedUser = _userService.SetRoles(user.Id, listRoles);
 
             //Assert
+            Assert.NotNull(editedUser);
             Assert.True(user.Id==editedUser.Id);
             Assert.Collection(editedUser.Roles, item => Assert.Contains("Reader", item.Name),
                                                 item => Assert.Contains("Writer", item.Name),
@@ -244,6 +246,8 @@ namespace MyHabr.Services.Tests
             var userIdFromToken = _jwtHelper.VerifyJwtToken(loginResponce.Token);
 
             var user = _userService.GetById(loginResponce.Id);
+            Assert.NotNull(user);
+            Assert.NotNull(user.VerificationCode);
             var varificationResponce = _userService.Verify(user.VerificationCode);
 
             RoleDTO writerRole = new RoleDTO { Name = "Writer" };
@@ -252,6 +256,7 @@ namespace MyHabr.Services.Tests
             listRoles.Add(writerRole);
             listRoles.Add(moderatorRole);
             var editedUser = _userService.SetRoles(user.Id, listRoles);
+            Assert.NotNull(editedUser);
 
             var unsetedListRoles = editedUser.Roles;
             unsetedListRoles.Remove(unsetedListRoles.First());
@@ -260,6 +265,7 @@ namespace MyHabr.Services.Tests
             var editedUser2 = _userService.SetRoles(editedUser.Id, listRoles);
 
             //Assert
+            Assert.NotNull(editedUser2);
             Assert.True(user.Id == editedUser.Id);
             Assert.Collection(editedUser2.Roles, item => Assert.Contains("Writer", item.Name),
                                                  item => Assert.Contains("Moderator", item.Name));
@@ -295,10 +301,10 @@ namespace MyHabr.Services.Tests
             var userAdmin = _userService.GetById(1);
 
             //Act
-            var boolVar = _userService.ChangePassword(userAdmin, "admin", "adminadmin");
 
             //Assert
-            Assert.True(boolVar);
+            Assert.NotNull(userAdmin);
+            Assert.True(_userService.ChangePassword(userAdmin, "admin", "adminadmin"));
             Assert.True(_userService.ChangePassword(userAdmin, "adminadmin", "admin"));
         }
 

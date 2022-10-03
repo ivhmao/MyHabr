@@ -36,7 +36,6 @@ namespace MyHabr.Controllers
             {
                 return BadRequest("An error ocured in generating the token");
             }
-            return Unauthorized();
         }
 
         [HttpPost, AllowAnonymous, Route("Registration")]
@@ -50,7 +49,6 @@ namespace MyHabr.Controllers
             {
                 return BadRequest("An error ocured in generating the token");
             }
-            return Unauthorized();
         }
 
         [HttpPost, AllowAnonymous, Route("Verify")]

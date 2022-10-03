@@ -9,11 +9,11 @@ namespace MyHabr.Interfaces
         bool DeleteById(int id);
         User? Edit(UserDTO userDTO);
         IEnumerable<User> GetAll();
-        User GetById(int id);
+        User? GetById(int id);
         LoginResponse Login(LoginRequest loginRequest);
         LoginResponse Registration(UserDTO userDTO);
         bool Verify(string verificationCode);
-        User GetCurrentUser(string token);
+        User? GetCurrentUser(string token);
         User? SetRoles(int id, IList<RoleDTO> listRoles);
         User? UnsetRoles(int id, IList<RoleDTO> listRoles);
     }
