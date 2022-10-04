@@ -10,6 +10,7 @@ namespace MyHabr.Interfaces
         User? Edit(UserDTO userDTO);
         IEnumerable<User> GetAll();
         User? GetById(int id);
+        IEnumerable<User> GetById(IEnumerable<int> listOfIds);
         LoginResponse Login(LoginRequest loginRequest);
         LoginResponse Registration(UserDTO userDTO);
         bool Verify(string verificationCode);

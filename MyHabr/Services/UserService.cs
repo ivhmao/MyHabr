@@ -96,6 +96,11 @@ namespace MyHabr.Services
             return _appDbContext.Users.Find(id);
         }
 
+        public IEnumerable<User> GetById(IEnumerable<int> listOfIds)
+        {
+            return _appDbContext.Users.Where(u => listOfIds.Contains(u.Id));
+        }
+
         public User? Edit(UserDTO userDTO)
         {
             if (!UserExists(userDTO.Id)) return null;

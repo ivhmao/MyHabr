@@ -1,4 +1,5 @@
 ﻿using MyHabr.Enums;
+using System.Text.Json.Serialization;
 
 namespace MyHabr.Entities
 {
@@ -12,5 +13,7 @@ namespace MyHabr.Entities
         public UserState UserState { get; set; }
         public string? VerificationCode { get; set; }
         public List<Role> Roles { get; set; } = new();
+        [JsonIgnore]
+        public List<Article> Articles { get; set; } = new();
     }
 }

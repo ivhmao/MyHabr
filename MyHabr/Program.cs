@@ -42,6 +42,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=myhabr.db"));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtHelper, JwtHelper>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IServiceWrapper, ServiceWrapper>();
+
 //builder.Services.AddHttpContextAccessor();
 
 
